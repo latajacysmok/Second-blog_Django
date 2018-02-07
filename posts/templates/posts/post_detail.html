@@ -1,19 +1,44 @@
 {% extends "posts/base.html" %}
+{% load urlify %}
 
 <head>
     <title>{% block head_title %} {{ instance.title }} | {{ block.super }} {% endblock head_title %}</title>
 </head>
 
 {% block content %}
-    <div class="col-sm-6 col-sm-offset-3">
+    <p class="col-sm-6 col-sm-offset-3">
         {% if obj.image %}
             <img src="{{ instance.image.url }}" class="img-responsive" />
         {% endif %}
-        <h1>{{instance.title}} <small>{{ instance.timestamp }}</small></h1>
+        <h1>{{instance.title}}</h1> <small>{{ instance.timestamp }}</small>  <small>{% if instance.draft %}<span style="color:red;">Draft</span>{% endif %}</small>
+
+         <div>
+
+    <a href="http://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+        Share on Facebook
+    </a>
+
+    |<a href="http://www.plus.google.com/share?url={{ request.build_absolute_uri }}">
+         Share on Google plus
+    </a>
+
+    |<a href="http://www.twitter.com/home?status={{ instance.content|urlify }}%20{{ request.build_absolute_uri }}">
+         Share on Twitter
+    </a>
+ </div>
 
         {{ instance.content|linebreaks }}<br/>
         {{ instance.updated }}<br/>
+        {% if instance.user %}
+                <p> Author: {{ instance.user }} </p>
+        {% endif %}
 
+        <!--można również użyć zamiast user to get_full_name i jeśli ktoś ma uzupełnione imię i nazwisko to je tutaj poda-->
+        </hr>
+        <p><div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="standard"
+                    data-action="like" data-size="small" data-show-faces="true" data-share="true"></div></p>
+
+        <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
     </div>
 
 {% endblock content %}
